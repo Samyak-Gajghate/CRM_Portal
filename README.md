@@ -4,6 +4,8 @@
 
 A full-stack Customer Relationship Management system with ticket lifecycle management, SLA enforcement, knowledge base, and role-based access control.
 
+[**Live Demo (Backend)**](https://sscrm-backend.fly.dev) | [**Frontend**](https://crm-customer-portal.vercel.app)
+
 ---
 
 ## 🚀 Quick Start (Docker — one command)
