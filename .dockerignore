@@ -1,0 +1,15 @@
+# Ignore these in Docker build context for speed
+target/
+.mvn/
+mvnw
+mvnw.cmd
+.git/
+.gitignore
+.idea/
+.vscode/
+*.md
+docs/
+.env
+.env.example
+docker-compose.yml
+crm-customer-portal/
