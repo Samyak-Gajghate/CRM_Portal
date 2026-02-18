@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #ffc107;
+            color: black;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: #fff3cd;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            padding: 20px;
+        }
+
+        .warning {
+            color: #856404;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>⚠️ SLA Breach Warning</h2>
+        </div>
+        <div class="content">
+            <p class="warning">ATTENTION: The following ticket is approaching SLA breach!</p>
+
+            <h3>Ticket Details:</h3>
+            <ul>
+                <li><strong>Ticket ID:</strong> #<span th:text="${ticketId}">123</span></li>
+                <li><strong>Title:</strong> <span th:text="${title}">Issue Title</span></li>
+                <li><strong>Priority:</strong> <span th:text="${priority}">HIGH</span></li>
+                <li><strong>Time Remaining:</strong>
+                    <span class="warning">
+                        <span th:text="${hoursRemaining}">1</span>h
+                        <span th:text="${minutesRemaining}">30</span>m
+                    </span>
+                </li>
+                <li><strong>Due Time:</strong> <span th:text="${dueTime}">2024-01-01 12:00</span></li>
+            </ul>
+
+            <p><strong>Action Required:</strong> Please prioritize this ticket to avoid SLA breach.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated SLA monitoring alert from CRM System.</p>
+        </div>
+    </div>
+</body>
+
+</html>

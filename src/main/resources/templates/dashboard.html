@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
+
+        <!-- Metrics Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card card-metric text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tickets</h5>
+                        <h2 class="mb-0" th:text="${totalTickets}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-metric text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Open</h5>
+                        <h2 class="mb-0" th:text="${openTickets}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-metric text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">In Progress</h5>
+                        <h2 class="mb-0" th:text="${inProgressTickets}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-metric text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Escalated</h5>
+                        <h2 class="mb-0" th:text="${escalatedTickets}">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Resolved Tickets</h5>
+                        <h2 class="text-success" th:text="${resolvedTickets}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Avg Resolution Time</h5>
+                        <h2 class="text-primary">
+                            <span th:text="${#numbers.formatDecimal(avgResolutionTime, 1, 2)}">0.00</span> hours
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a th:href="@{/tickets/create}" class="btn btn-primary me-2">
+                    <i class="bi bi-plus-circle"></i> Create Ticket
+                </a>
+                <a th:href="@{/customers/create}" class="btn btn-success me-2">
+                    <i class="bi bi-person-plus"></i> Add Customer
+                </a>
+                <a th:href="@{/tickets}" class="btn btn-info">
+                    <i class="bi bi-list-ul"></i> View All Tickets
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

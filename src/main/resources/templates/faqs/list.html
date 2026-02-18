@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-question-circle"></i> Knowledge Base</h2>
+            <a th:href="@{/faqs/create}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add FAQ
+            </a>
+        </div>
+
+        <!-- Search -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <form th:action="@{/faqs}" method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" name="search" class="form-control" placeholder="Search FAQs...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- FAQs List -->
+        <div class="row">
+            <div class="col-md-12">
+                <div th:each="faq : ${faqs}" class="card mb-3">
+                    <div class="card-header">
+                        <h5 class="mb-0" th:text="${faq.question}">Question?</h5>
+                    </div>
+                    <div class="card-body">
+                        <p th:text="${faq.answer}">Answer</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Category: <span class="badge bg-secondary" th:text="${faq.category}">General</span>
+                                • Views: <span th:text="${faq.usageCount}">0</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

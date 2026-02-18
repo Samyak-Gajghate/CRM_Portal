@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #17a2b8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>New Ticket Assignment</h2>
+        </div>
+        <div class="content">
+            <p>Hello <span th:text="${agentName}">Agent</span>,</p>
+            <p>A new ticket has been assigned to you.</p>
+
+            <h3>Ticket Details:</h3>
+            <ul>
+                <li><strong>Ticket ID:</strong> #<span th:text="${ticketId}">123</span></li>
+                <li><strong>Title:</strong> <span th:text="${title}">Issue Title</span></li>
+                <li><strong>Description:</strong> <span th:text="${description}">Description</span></li>
+                <li><strong>Priority:</strong> <span th:text="${priority}">MEDIUM</span></li>
+                <li><strong>Customer:</strong> <span th:text="${customerName}">Customer Name</span></li>
+                <li><strong>Due Time:</strong> <span th:text="${dueTime}">2024-01-01 12:00</span></li>
+            </ul>
+
+            <p>Please review and take appropriate action.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message from CRM System. Please do not reply to this email.</p>
+        </div>
+    </div>
+</body>
+
+</html>

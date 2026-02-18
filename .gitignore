@@ -1,0 +1,29 @@
+# Ignore Maven build files
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE files
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Application properties with sensitive data
+application-local.yml
+application-prod.yml
+
+# Environment secrets — NEVER commit this (use .env.example as template)
+.env

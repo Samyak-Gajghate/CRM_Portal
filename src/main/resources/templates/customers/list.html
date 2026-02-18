@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-people"></i> Customers</h2>
+            <a th:href="@{/customers/create}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Add Customer
+            </a>
+        </div>
+
+        <!-- Search -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <form th:action="@{/customers}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="search" class="form-control" placeholder="Search by name...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-secondary">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Category</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="customer : ${customers}">
+                                <td th:text="${customer.id}">1</td>
+                                <td th:text="${customer.name}">Name</td>
+                                <td th:text="${customer.email}">email@example.com</td>
+                                <td th:text="${customer.phone}">123-456-7890</td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${customer.category}">REGULAR</span>
+                                </td>
+                                <td th:text="${#temporals.format(customer.createdAt, 'yyyy-MM-dd')}">2024-01-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
