@@ -43,11 +43,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- PostgreSQL Driver - pinned to 42.7.3 to fix Neon SCRAM-SHA-256 auth -->
+        <!-- PostgreSQL Driver - 42.7.4 fixes SCRAM-SHA-256 iteration count bug with Neon -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.3</version>
+            <version>42.7.4</version>
             <scope>runtime</scope>
         </dependency>
 
