@@ -1,1 +1,100 @@
+/* index.css */
 @import "tailwindcss";
+
+:root {
+  /* === BRAND === */
+  --brand-primary: #0d9488;        /* Teal 600 — main accent */
+  --brand-primary-hover: #0f766e;  /* Teal 700 */
+  --brand-primary-light: #ccfbf1;  /* Teal 100 — tinted bg */
+  --brand-secondary: #6366f1;      /* Indigo 500 — secondary accent */
+
+  /* === SIDEBAR === */
+  --sidebar-bg: #1e2433;           /* Deep slate navy */
+  --sidebar-hover: #2a3144;
+  --sidebar-active: #0d9488;       /* Brand teal */
+  --sidebar-text: #94a3b8;         /* Slate 400 */
+  --sidebar-text-active: #ffffff;
+  --sidebar-border: #2a3144;
+
+  /* === SURFACES === */
+  --surface-page: #f8f9fb;         /* Page background */
+  --surface-card: #ffffff;
+  --surface-border: #e2e8f0;       /* Slate 200 */
+  --surface-border-subtle: #f1f5f9;
+
+  /* === TEXT === */
+  --text-primary: #0f172a;         /* Slate 900 */
+  --text-secondary: #334155;       /* Slate 700 */
+  --text-muted: #64748b;           /* Slate 500 */
+  --text-faint: #94a3b8;           /* Slate 400 */
+
+  /* === TICKET STATUS === */
+  --status-open-bg: #dcfce7;
+  --status-open-text: #15803d;
+  --status-open-border: #86efac;
+
+  --status-in-progress-bg: #dbeafe;
+  --status-in-progress-text: #1d4ed8;
+  --status-in-progress-border: #93c5fd;
+
+  --status-escalated-bg: #fee2e2;
+  --status-escalated-text: #dc2626;
+  --status-escalated-border: #fca5a5;
+
+  --status-resolved-bg: #f0fdf4;
+  --status-resolved-text: #166534;
+  --status-resolved-border: #bbf7d0;
+
+  --status-closed-bg: #f8fafc;
+  --status-closed-text: #475569;
+  --status-closed-border: #cbd5e1;
+
+  /* === PRIORITY === */
+  --priority-critical-bg: #fef2f2;
+  --priority-critical-text: #dc2626;
+  --priority-critical-dot: #ef4444;
+  --priority-critical-bar: #ef4444;
+
+  --priority-high-bg: #fff7ed;
+  --priority-high-text: #c2410c;
+  --priority-high-dot: #f97316;
+  --priority-high-bar: #f97316;
+
+  --priority-medium-bg: #fffbeb;
+  --priority-medium-text: #b45309;
+  --priority-medium-dot: #f59e0b;
+  --priority-medium-bar: #f59e0b;
+
+  --priority-low-bg: #f8fafc;
+  --priority-low-text: #475569;
+  --priority-low-dot: #94a3b8;
+  --priority-low-bar: #94a3b8;
+
+  /* === SLA === */
+  --sla-overdue-bg: #fef2f2;
+  --sla-overdue-text: #dc2626;
+  --sla-warning-bg: #fffbeb;
+  --sla-warning-text: #b45309;
+  --sla-healthy-bg: #f0fdf4;
+  --sla-healthy-text: #166534;
+
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;        /* 14px base — dense, professional for CRM agents */
+  line-height: 1.5;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ticket IDs, timestamps, code snippets */
+.font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}

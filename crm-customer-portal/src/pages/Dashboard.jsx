@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { AlertCircle, CheckCircle, Clock, FileText, Plus } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/ui/Toast';
+import { FileText, Clock, AlertCircle, CheckCircle, Plus } from 'lucide-react';
+import { formatDistanceToNow, format } from 'date-fns';
+import StatusBadge from '../components/ui/StatusBadge';
+import PriorityBadge from '../components/ui/PriorityBadge';
+import EmptyState from '../components/ui/EmptyState';
 
 const Dashboard = () => {
+    const { user } = useAuth();
+    const toast = useToast();
     const [stats, setStats] = useState({
         total: 0,
         open: 0,
@@ -12,146 +20,174 @@ const Dashboard = () => {
     });
     const [recentTickets, setRecentTickets] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
                 const [statsRes, ticketsRes] = await Promise.all([
                     api.get('/tickets/stats'),
-                    api.get('/tickets') // Backend filters by user automatically
+                    api.get('/tickets')
                 ]);
 
-                setStats(statsRes.data?.data || stats);
-                // Take only the 5 most recent tickets
-                const rawTickets = ticketsRes.data?.data || [];
+                setStats(statsRes.data?.data || statsRes.data || stats);
+                const rawTickets = ticketsRes.data?.data || ticketsRes.data || [];
                 const sorted = rawTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 setRecentTickets(sorted.slice(0, 5));
             } catch (err) {
-                console.error("Error fetching dashboard data", err);
-                setError("Failed to load dashboard data");
+                toast.error("Failed to load dashboard. Refresh to try again.");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (loading) return <div className="text-center py-10">Loading dashboard...</div>;
-    if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
+    if (loading) return <div className="flex h-[50vh] items-center justify-center text-slate-500">Loading dashboard...</div>;
 
-    const StatCard = ({ title, value, icon: Icon, color, bgColor }) => (
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-                <div className="flex items-center">
-                    <div className={`flex-shrink-0 rounded-md p-3 ${bgColor}`}>
-                        <Icon className={`h-6 w-6 ${color}`} />
-                    </div>
-                    <div className="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
-                            <dd className="text-lg font-medium text-gray-900">{value}</dd>
-                        </dl>
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Good morning';
+        if (hour < 18) return 'Good afternoon';
+        return 'Good evening';
+    };
+
+    const todayDate = format(new Date(), 'EEEE, MMMM d, yyyy');
+
+    const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, bgClass, isEscalated }) => {
+        const hasEscalated = isEscalated && value > 0;
+        return (
+            <div className={`relative overflow-hidden shadow-sm rounded-lg flex flex-col p-5 bg-white border border-slate-200 transition-colors ${hasEscalated ? 'bg-red-50/50 border-red-100' : ''}`}>
+                <div className={`absolute left-0 top-0 bottom-0 w-1 ${hasEscalated ? 'bg-red-500' : borderClass}`}></div>
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-md ${hasEscalated ? 'bg-red-100' : bgClass}`}>
+                            <Icon className={`w-4 h-4 ${hasEscalated ? 'text-red-600' : colorClass}`} />
+                        </div>
+                        <h3 className="text-sm font-medium text-slate-600 flex items-center gap-2">
+                            {title}
+                            {hasEscalated && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>}
+                        </h3>
                     </div>
                 </div>
+                <div>
+                    <p className={`text-3xl font-bold ${hasEscalated ? 'text-red-700' : 'text-slate-900'}`}>{value}</p>
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        {getGreeting()}, {user?.username} <span className="text-xl">👋</span>
+                    </h1>
+                    <p className="text-sm text-slate-500 mt-1">{todayDate}</p>
+                </div>
                 <Link
                     to="/tickets/new"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-semibold rounded-[6px] hover:bg-teal-700 active:scale-[0.98] transition-all shadow-sm"
                 >
-                    <Plus className="-ml-1 mr-2 h-5 w-5" />
+                    <Plus className="w-4 h-4" />
                     New Ticket
                 </Link>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                     title="Total Tickets"
                     value={stats.total}
                     icon={FileText}
-                    color="text-blue-600"
-                    bgColor="bg-blue-100"
+                    colorClass="text-teal-600"
+                    bgClass="bg-teal-50"
+                    borderClass="bg-teal-500"
                 />
                 <StatCard
                     title="Open Tickets"
                     value={stats.open}
                     icon={Clock}
-                    color="text-yellow-600"
-                    bgColor="bg-yellow-100"
+                    colorClass="text-amber-600"
+                    bgClass="bg-amber-50"
+                    borderClass="bg-amber-500"
                 />
                 <StatCard
                     title="Escalated"
                     value={stats.escalated}
                     icon={AlertCircle}
-                    color="text-red-600"
-                    bgColor="bg-red-100"
+                    colorClass="text-red-600"
+                    bgClass="bg-red-50"
+                    borderClass="bg-red-500"
+                    isEscalated={true}
                 />
                 <StatCard
                     title="Resolved/Closed"
                     value={stats.resolved}
                     icon={CheckCircle}
-                    color="text-green-600"
-                    bgColor="bg-green-100"
+                    colorClass="text-emerald-600"
+                    bgClass="bg-emerald-50"
+                    borderClass="bg-emerald-500"
                 />
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white shadow rounded-lg">
-                <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Activity</h3>
-                </div>
-                <ul className="divide-y divide-gray-200">
-                    {recentTickets.length === 0 ? (
-                        <li className="px-4 py-4 sm:px-6 text-gray-500 text-center">No recent tickets</li>
-                    ) : (
-                        recentTickets.map((ticket) => (
-                            <li key={ticket.id}>
-                                <Link to={`/tickets/${ticket.id}`} className="block hover:bg-gray-50">
-                                    <div className="px-4 py-4 sm:px-6">
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-sm font-medium text-blue-600 truncate">{ticket.title}</p>
-                                            <div className="ml-2 flex-shrink-0 flex">
-                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    ${ticket.status === 'OPEN' ? 'bg-green-100 text-green-800' :
-                                                        ticket.status === 'ESCALATED' ? 'bg-red-100 text-red-800' :
-                                                            'bg-gray-100 text-gray-800'}`}>
-                                                    {ticket.status}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="mt-2 sm:flex sm:justify-between">
-                                            <div className="sm:flex">
-                                                <p className="flex items-center text-sm text-gray-500">
-                                                    #{ticket.id}
-                                                </p>
-                                            </div>
-                                            <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                                <Clock className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                                                <p>
-                                                    {new Date(ticket.createdAt || Date.now()).toLocaleDateString()}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </li>
-                        ))
-                    )}
-                </ul>
-                <div className="bg-gray-50 px-4 py-4 sm:px-6 rounded-b-lg">
-                    <Link to="/tickets" className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                        View all tickets <span aria-hidden="true">&rarr;</span>
+            <div className="bg-white shadow-sm rounded-lg border border-slate-200 overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <h2 className="text-base font-semibold text-slate-800">Recent Activity</h2>
+                    <Link to="/tickets" className="text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors">
+                        View all &rarr;
                     </Link>
                 </div>
+                
+                {recentTickets.length === 0 ? (
+                    <EmptyState 
+                        icon={FileText}
+                        title="No recent tickets"
+                        description="You don't have any recent ticket activity to show."
+                    />
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-200">
+                                <tr>
+                                    <th className="px-6 py-3 font-medium">#</th>
+                                    <th className="px-6 py-3 font-medium">Subject</th>
+                                    <th className="px-6 py-3 font-medium">Priority</th>
+                                    <th className="px-6 py-3 font-medium">Status</th>
+                                    <th className="px-6 py-3 font-medium">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {recentTickets.map((ticket) => (
+                                    <tr key={ticket.id} className="hover:bg-slate-50/80 transition-colors group">
+                                        <td className="px-6 py-3 whitespace-nowrap">
+                                            <Link to={`/tickets/${ticket.id}`} className="font-mono text-slate-500 group-hover:text-teal-600 transition-colors">
+                                                #{(ticket.id || '').toString().substring(0,6).toUpperCase()}
+                                            </Link>
+                                        </td>
+                                        <td className="px-6 py-3">
+                                            <Link to={`/tickets/${ticket.id}`} className="font-semibold text-slate-900 group-hover:text-teal-600 transition-colors truncate block max-w-xs md:max-w-md">
+                                                {ticket.title}
+                                            </Link>
+                                        </td>
+                                        <td className="px-6 py-3 whitespace-nowrap">
+                                            <PriorityBadge priority={ticket.priority || 'LOW'} />
+                                        </td>
+                                        <td className="px-6 py-3 whitespace-nowrap">
+                                            <StatusBadge status={ticket.status} />
+                                        </td>
+                                        <td className="px-6 py-3 whitespace-nowrap text-slate-500 text-sm">
+                                            {formatDistanceToNow(new Date(ticket.createdAt || Date.now()), { addSuffix: true })}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
         </div>
     );
